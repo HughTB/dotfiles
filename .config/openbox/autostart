@@ -22,3 +22,4 @@ feh --bg-scale ~/.wallpaper &
 autorandr &
 conky --daemonize &
 xautolock -time 7 -locker "sh /home/hugh/.scripts/suspend.sh -n" -notify 120 -notifier "sh /home/hugh/.scripts/lock.sh" -detectsleep &
+redshift &

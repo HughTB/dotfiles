@@ -1,0 +1,28 @@
+configuration {
+  modes: [ drun ];
+}
+
+@theme "purple"
+
+window {
+  font: "IBM Plex Mono 12";
+  background-color: #121212;
+  border: #000000;
+}
+
+message {
+  border-color: #8635E3;
+}
+
+listview {
+  border-color: #8635E3;
+  padding: 0px;
+}
+
+element, element-text {
+  background-color: #242424;
+}
+
+element.selected.normal {
+  background-color: #8635E3;
+}
