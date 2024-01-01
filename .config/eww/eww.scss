@@ -1,0 +1,88 @@
+$accent: #6D1CC9;
+$red: #E3353B;
+$green: #92E335;
+$surface-bg: #121212;
+$surface-fg: #FFFFFF;
+
+* {
+  all: unset
+}
+
+.bar {
+  margin-right: 1px;
+  background: $surface-bg;
+  border-right: 1px solid $accent;
+  font-family: "BlexMono Nerd Font";
+  color: $surface-fg;
+}
+
+.layout-box {
+  font-family: "BlexMono Nerd Font";
+}
+
+.date-box {
+  padding-top: 6px;
+  font-family: "IBM Plex Sans";
+  font-size: 2.5em;
+  font-weight: bold;
+}
+
+.clock-box {
+  font-size: 2em;
+  font-weight: bold;
+}
+
+.clock-text {
+  margin: -0.25em;
+}
+
+.sans {
+  font-family: "IBM Plex Sans";
+  font-weight: bold;
+}
+
+.wifi-box .icon {
+  padding-right: 0.35em;
+}
+
+.brightness-box label {
+  padding-right: 0.35em;
+}
+
+.icon {
+  font-size: 2em;
+}
+
+.power-icon {
+  font-size: 2em;
+}
+
+.power-shutdown, .power-reboot {
+  color: $red;
+}
+
+.power-logout {
+  padding-right: 0.1em;
+}
+
+.power-sleep {
+  padding-right: 0.3em;
+}
+
+scale trough {
+  border-radius: 5px;
+  min-height: 80px;
+  min-width: 10px;
+  background-color: #242424;
+}
+
+trough highlight {
+  border-radius: 5px;
+  background-color: $surface-fg;
+}
+
+tooltip {
+  font-family: "BlexMono Nerd Font";
+  background-color: $surface-bg;
+  color: $surface-fg;
+}

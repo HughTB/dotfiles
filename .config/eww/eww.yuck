@@ -1,0 +1,176 @@
+(defvar eww "/usr/bin/eww")
+
+(defwidget bar []
+  (centerbox :class "bar" :orientation "v"
+    (box :class "top-content" :orientation "v" :valign "start" :space-evenly false
+      (date)
+    )
+    (box :class "center-content" :orientation "v" :valign "center" :space-evenly false
+      (clock)
+    )
+    (box :class "bottom-content" :orientation "v" :valign "end" :space-evenly false
+      (wifi :strength net :offline "󰤮" :high "󰤨" :mid-high "󰤥" :mid-low "󰤢" :low "󰤟")
+      (volume :volume vol :status vol-status :unmuted "󰕾" :muted "󰝟")
+      (brightness :brightness brightness :high "󰃠" :low "󰃞")
+      (battery :battery {EWW_BATTERY.BAT0.capacity} :status {EWW_BATTERY.BAT0.status} :zero "󰂃" :one "󰁺" :two "󰁻" :three "󰁼" :four "󰁽" :five "󰁾" :six "󰁿" :seven "󰂀" :eight "󰂁" :nine "󰂂" :ten "󰁹" :charging "󰂄")
+      (power-menu :shutdown "󰐥" :restart "󰜉" :sleep "󰒲" :logout "󰗽" :lock "󰌾")
+    )
+  )
+)
+
+
+(defpoll time :interval "5s"
+  :initial `date +'{"hour":"%H","min":"%M"}'`
+  `date +'{"hour":"%H","min":"%M","weekday":"%a","month":"%b","day":"%d"}'`)
+
+(defpoll net :interval "30s"
+  :initial ``
+  `nmcli -terse -fields SIGNAL,ACTIVE device wifi \
+    | awk --field-separator ':' '{if($2=="yes")print$1}'`)
+
+(defpoll net-ssid :interval "30s"
+  :initial "Not Connected"
+  `nmcli -t -f active,ssid dev wifi \
+    | awk --field-separator ':' '{if($1=="yes")print$2}'`)
+
+(defpoll vol :interval "0.5s"
+  :initial `pamixer --get-volume`
+  `pamixer --get-volume`)
+
+(defpoll vol-status :interval "0.5s"
+  :initial `pamixer --get-volume-human`
+  `pamixer --get-volume-human`)
+
+(defpoll brightness :interval "0.5s"
+  :initial `brillo -G`
+  `brillo -G`)
+
+(defwidget date []
+  (box :class "date-box" :halign "center" :space-evenly false
+    (label :text "${time.weekday} ${time.month} ${time.day}" :angle 90)
+  )
+)
+
+(defwidget clock []
+  (box :class "clock-box" :halign "center" :orientation "v" :space-evenly false
+    (label :class "clock-text" :text "${time.hour}")
+    (label :class "clock-text" :text "${time.min}")
+  )
+)
+
+(defwidget wifi [strength offline high mid-high mid-low low]
+  (eventbox
+    :onhover "${eww} update show-ssid=true"
+    :onhoverlost "${eww} update show-ssid=false"
+    (box :class "wifi-box" :orientation "v" :halign "center" :space-evenly false
+      (revealer :transition "slide" :reveal show-ssid :duration "500ms"
+        (label :class "ssid-text sans" :text {strength == "" ? "Not Connected" : "Connected to ${net-ssid}"} :angle 90)
+      )
+      (label :class "icon" :text {strength == "" ? offline :
+        strength < 26 ? low :
+        strength < 51 ? mid-low :
+        strength < 76 ? mid-high : high}
+      )
+    )
+  )
+)
+(defvar show-ssid false)
+
+(defwidget brightness [brightness high]
+  (eventbox
+    :onhover "${eww} update show-brightness=true"
+    :onhoverlost "${eww} update show-brightness=false"
+    (box :class "brightness-box" :orientation "v" :space-evenly false
+      :tooltip "Brightness: ${brightness}%"
+      (revealer :transition "slide" :reveal show-brightness :duration "500ms"
+        (scale :class "brightness-bar"
+          :value brightness
+          :onchange "brillo -S {}"
+          :orientation "v"
+          :flipped true
+          :max 101
+          :min 0
+        )
+      )
+      (label :class "icon" :text high)
+    )
+  )
+)
+(defvar show-brightness false)
+
+(defwidget battery [battery status zero one two three four five six seven eight nine ten charging]
+  (eventbox
+    :onhover "${eww} update show-battery=true"
+    :onhoverlost "${eww} update show-battery=false"
+    (box :class "battery-box" :orientation "v" :halign "center" :space-evenly false
+      (revealer :transition "slide" :reveal show-battery :duration "500ms"
+        (label :class "battery-text sans" :text "${status} - ${battery}%" :angle 90)
+      )
+      (label :class "icon" :text {status == "Charging" ? charging :
+        battery < 10 ? zero :
+        battery < 20 ? one :
+        battery < 30 ? two :
+        battery < 40 ? three :
+        battery < 50 ? four :
+        battery < 60 ? five :
+        battery < 70 ? six :
+        battery < 80 ? seven :
+        battery < 90 ? eight :
+        battery < 95 ? nine : ten}
+      )
+    )
+  )
+)
+(defvar show-battery false)
+
+(defwidget volume [volume status unmuted muted]
+  (eventbox
+    :onhover "${eww} update show-volume=true"
+    :onhoverlost "${eww} update show-volume=false"
+    (box :class "volume-box" :orientation "v" :space-evenly false
+      :tooltip "Volume: ${volume}%"
+      (revealer :transition "slide" :reveal show-volume :duration "500ms"
+        (scale :class "volume-bar"
+          :value volume
+          :onchange "pamixer --set-volume {}"
+          :orientation "v"
+          :flipped true
+          :max 101
+          :min 0
+        )
+      )
+      (label :class "icon" :text {status == "muted" ? muted : unmuted})
+    )
+  )
+)
+(defvar show-volume false)
+
+(defwidget power-menu [shutdown restart sleep lock logout]
+  (eventbox
+    :onhover "${eww} update show-power=true"
+    :onhoverlost "${eww} update show-power=false"
+    (box :class "power-box" :orientation "v" :space-evenly false
+      (revealer :transition "slide" :reveal show-power :duration "500ms"
+        (box :orientation "v"
+          (button :class "power-icon power-reboot" :onclick "reboot" :tooltip "Restart" restart)
+          (button :class "power-icon power-sleep" :onclick "swaylock -S --effect-blur 7x5 -f; systemctl suspend" :tooltip "Sleep" sleep)
+          (button :class "power-icon power-logout" :onclick "killall Hyprland" :tooltip "Log Out" logout)
+          (button :class "power-icon power-lock" :onclick "swaylock -S --effect-blur 7x5 -f" :tooltip "Lock" lock)
+        )
+      )
+      (button :class "power-icon power-shutdown" :onclick "shutdown now" :tooltip "Shutdown" shutdown)
+    )
+  )
+)
+(defvar show-power false)
+
+(defwindow bar
+  :monitor 0
+  :stacking "fg"
+  :exclusive true
+  :geometry (geometry
+    :x "0"
+    :y "0"
+    :height "100%"
+    :anchor "left center")
+  (bar))

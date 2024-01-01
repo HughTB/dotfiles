@@ -1,0 +1,36 @@
+import = [
+ "~/.config/alacritty/themes/themes/blood_moon.toml"
+]
+
+[cursor]
+thickness = 0.25
+
+[cursor.style]
+blinking = "off"
+shape = "Underline"
+
+[font]
+size = 12
+
+[font.bold]
+family = "BlexMono Nerd Font"
+style = "Bold"
+
+[font.bold_italic]
+family = "BlexMono Nerd Font"
+style = "Bold Italic"
+
+[font.italic]
+family = "BlexMono Nerd Font"
+style = "Italic"
+
+[font.normal]
+family = "BlexMono Nerd Font"
+style = "Regular"
+
+[window]
+resize_increments = true
+
+[window.dimensions]
+columns = 80
+lines = 24

@@ -1,0 +1,3 @@
+timeout 300 'swaylock -S --effect-blur 7x5 -f'
+timeout 360 'systemctl suspend'
+before-sleep 'swaylock -S --effect-blur 7x5 -f'
