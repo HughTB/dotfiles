@@ -101,3 +101,8 @@ source $ZSH/oh-my-zsh.sh
 # alias ohmyzsh="mate ~/.oh-my-zsh"
 
 export PATH="/home/hugh/.local/bin:$PATH"
+export VISUAL=nano
+export EDITOR=nano
+
+alias sudo="sudo "
+alias nano="nano --rcfile /home/hugh/.config/nano/nanorc"
