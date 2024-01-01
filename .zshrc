@@ -100,7 +100,7 @@ source $ZSH/oh-my-zsh.sh
 # alias zshconfig="mate ~/.zshrc"
 # alias ohmyzsh="mate ~/.oh-my-zsh"
 
-export PATH="/home/hugh/.local/bin:$PATH"
+export PATH="/home/hugh/.local/bin:/opt/flutter/bin:$PATH"
 export VISUAL=nano
 export EDITOR=nano
 
