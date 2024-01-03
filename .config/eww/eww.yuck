@@ -3,7 +3,7 @@
 (defwidget bar []
   (centerbox :class "bar" :orientation "v"
     (box :class "top-content" :orientation "v" :valign "start" :space-evenly false
-      (date)
+      (now-playing-date)
     )
     (box :class "center-content" :orientation "v" :valign "center" :space-evenly false
       (usage-clock :cpu-label "CPU" :mem-label "MEM" :temp-label "TEMP")
@@ -49,9 +49,26 @@
   :initial `acpi -b | awk --field-separator ',' '{print$3}' | awk --field-separator ' ' '{print$1}'`
   `acpi -b | awk --field-separator ',' '{print$3}' | awk --field-separator ' ' '{print$1}'`)
 
+(defpoll now-playing :interval "1s"
+  :initial `playerctl metadata --format '{ "title": "{{title}}", "album": "{{album}}", "artist": "{{artist}}" }'`
+  `playerctl metadata --format '{ "title": "{{title}}", "album": "{{album}}", "artist": "{{artist}}" }'`)
+
+(defpoll now-playing-status :interval "1s"
+  :initial `playerctl status`
+  `playerctl status`)
+
 (defwidget date []
   (box :class "date-box" :halign "center" :space-evenly false
     (label :text "${time.weekday} ${time.month} ${time.day}" :angle 90)
+  )
+)
+
+(defwidget now-playing-date []
+  (box :class "now-playing-date-box" :orientation "v" :space-evenly false
+    (date)
+    (revealer :transition "slidedown" :reveal "${now-playing-status == "Playing"}" :duration "500ms"
+      (label :class "now-playing-label" :text "${now-playing.artist} - ${now-playing.title}" :angle 90 :limit-width 40)
+    )
   )
 )
 
@@ -73,7 +90,7 @@
           (label :class "usage-label usage-cpu" :text cpu-label)
           (label :class "usage-value usage-cpu" :text "${round(EWW_CPU.avg, 0)}%")
           (label :class "usage-label usage-mem" :text mem-label)
-          (label :class "usage-value usage-mem" :text "${round(EWW_RAM.used_mem / 1073741824, 2)}G")
+          (label :class "usage-value usage-mem" :text "${round(EWW_RAM.used_mem / 1073741824, 2)}G" :limit-width: 5)
           (label :class "usage-label usage-temp" :text temp-label)
           (label :class "usage-value usage-temp" :text "${round(EWW_TEMPS.CORETEMP_PACKAGE_ID_0, 0)}C")
         )
