@@ -50,12 +50,12 @@
   `acpi -b | awk --field-separator ',' '{print$3}' | awk --field-separator ' ' '{print$1}'`)
 
 (defpoll now-playing :interval "1s"
-  :initial `playerctl metadata --format '{ "title": "{{title}}", "album": "{{album}}", "artist": "{{artist}}" }'`
-  `playerctl metadata --format '{ "title": "{{title}}", "album": "{{album}}", "artist": "{{artist}}" }'`)
+  :initial `/home/hugh/.config/eww/scripts/get-now-playing.sh`
+  `/home/hugh/.config/eww/scripts/get-now-playing.sh`)
 
 (defpoll now-playing-status :interval "1s"
-  :initial `playerctl status`
-  `playerctl status`)
+  :initial `/home/hugh/.config/eww/scripts/get-now-playing-status.sh`
+  `/home/hugh/.config/eww/scripts/get-now-playing-status.sh`)
 
 (defwidget date []
   (box :class "date-box" :halign "center" :space-evenly false
