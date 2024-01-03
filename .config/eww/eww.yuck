@@ -6,13 +6,13 @@
       (date)
     )
     (box :class "center-content" :orientation "v" :valign "center" :space-evenly false
-      (clock)
+      (usage-clock :cpu-label "CPU" :mem-label "MEM" :temp-label "TEMP")
     )
     (box :class "bottom-content" :orientation "v" :valign "end" :space-evenly false
       (wifi :strength net :offline "󰤮" :high "󰤨" :mid-high "󰤥" :mid-low "󰤢" :low "󰤟")
       (volume :volume vol :status vol-status :unmuted "󰕾" :muted "󰝟")
       (brightness :brightness brightness :high "󰃠" :low "󰃞")
-      (battery :battery {EWW_BATTERY.BAT0.capacity} :status {EWW_BATTERY.BAT0.status} :zero "󰂃" :one "󰁺" :two "󰁻" :three "󰁼" :four "󰁽" :five "󰁾" :six "󰁿" :seven "󰂀" :eight "󰂁" :nine "󰂂" :ten "󰁹" :charging "󰂄")
+      (battery :battery {EWW_BATTERY.BAT1.capacity} :status {EWW_BATTERY.BAT1.status} :zero "󰂃" :one "󰁺" :two "󰁻" :three "󰁼" :four "󰁽" :five "󰁾" :six "󰁿" :seven "󰂀" :eight "󰂁" :nine "󰂂" :ten "󰁹" :charging "󰂄")
       (power-menu :shutdown "󰐥" :restart "󰜉" :sleep "󰒲" :logout "󰗽" :lock "󰌾")
     )
   )
@@ -45,6 +45,10 @@
   :initial `brillo -G`
   `brillo -G`)
 
+(defpoll batt-time :interval "5s"
+  :initial `acpi -b | awk --field-separator ',' '{print$3}' | awk --field-separator ' ' '{print$1}'`
+  `acpi -b | awk --field-separator ',' '{print$3}' | awk --field-separator ' ' '{print$1}'`)
+
 (defwidget date []
   (box :class "date-box" :halign "center" :space-evenly false
     (label :text "${time.weekday} ${time.month} ${time.day}" :angle 90)
@@ -57,6 +61,27 @@
     (label :class "clock-text" :text "${time.min}")
   )
 )
+
+(defwidget usage-clock [cpu-label mem-label temp-label]
+  (eventbox
+    :onhover "${eww} update show-usage=true"
+    :onhoverlost "${eww} update show-usage=false"
+    (box :class "usage-box" :orientation "v" :space-evenly false
+      (clock)
+      (revealer :transition "slidedown" :reveal show-usage :duration "500ms"
+        (box :orientation "v" :class "usage-internal-box"
+          (label :class "usage-label usage-cpu" :text cpu-label)
+          (label :class "usage-value usage-cpu" :text "${round(EWW_CPU.avg, 0)}%")
+          (label :class "usage-label usage-mem" :text mem-label)
+          (label :class "usage-value usage-mem" :text "${round(EWW_RAM.used_mem / 1073741824, 2)}G")
+          (label :class "usage-label usage-temp" :text temp-label)
+          (label :class "usage-value usage-temp" :text "${round(EWW_TEMPS.CORETEMP_PACKAGE_ID_0, 0)}C")
+        )
+      )
+    )
+  )
+)
+(defvar show-usage false)
 
 (defwidget wifi [strength offline high mid-high mid-low low]
   (eventbox
@@ -104,7 +129,7 @@
     :onhoverlost "${eww} update show-battery=false"
     (box :class "battery-box" :orientation "v" :halign "center" :space-evenly false
       (revealer :transition "slide" :reveal show-battery :duration "500ms"
-        (label :class "battery-text sans" :text "${status} - ${battery}%" :angle 90)
+        (label :class "battery-text sans" :text "${battery}% - ${batt-time}" :angle 90)
       )
       (label :class "icon" :text {status == "Charging" ? charging :
         battery < 10 ? zero :
