@@ -90,7 +90,7 @@
           (label :class "usage-label usage-cpu" :text cpu-label)
           (label :class "usage-value usage-cpu" :text "${round(EWW_CPU.avg, 0)}%")
           (label :class "usage-label usage-mem" :text mem-label)
-          (label :class "usage-value usage-mem" :text "${round(EWW_RAM.used_mem / 1073741824, 2)}G" :limit-width: 5)
+          (label :class "usage-value usage-mem" :text "${round(EWW_RAM.used_mem / 1073741824, 1)}G")
           (label :class "usage-label usage-temp" :text temp-label)
           (label :class "usage-value usage-temp" :text "${round(EWW_TEMPS.CORETEMP_PACKAGE_ID_0, 0)}C")
         )
