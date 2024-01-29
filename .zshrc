@@ -103,6 +103,7 @@ source $ZSH/oh-my-zsh.sh
 export PATH="/home/hugh/.local/bin:/opt/flutter/bin:$PATH"
 export VISUAL=nano
 export EDITOR=nano
+export PICO_SDK_PATH="/usr/share/pico-sdk"
 
 alias sudo="sudo "
 alias nano="nano --rcfile /home/hugh/.config/nano/nanorc"
