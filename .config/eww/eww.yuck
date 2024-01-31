@@ -19,7 +19,7 @@
 )
 
 
-(defpoll time :interval "5s"
+(defpoll time :interval "30s"
   :initial `date +'{"hour":"%H","min":"%M"}'`
   `date +'{"hour":"%H","min":"%M","weekday":"%a","month":"%b","day":"%d"}'`)
 
@@ -33,15 +33,15 @@
   `nmcli -t -f active,ssid dev wifi \
     | awk --field-separator ':' '{if($1=="yes")print$2}'`)
 
-(defpoll vol :interval "0.5s"
+(defpoll vol :interval "5s"
   :initial `pamixer --get-volume`
   `pamixer --get-volume`)
 
-(defpoll vol-status :interval "0.5s"
+(defpoll vol-status :interval "5s"
   :initial `pamixer --get-volume-human`
   `pamixer --get-volume-human`)
 
-(defpoll brightness :interval "0.5s"
+(defpoll brightness :interval "5s"
   :initial `brillo -G`
   `brillo -G`)
 
@@ -49,11 +49,11 @@
   :initial `acpi -b | awk --field-separator ',' '{print$3}' | awk --field-separator ' ' '{print$1}'`
   `acpi -b | awk --field-separator ',' '{print$3}' | awk --field-separator ' ' '{print$1}'`)
 
-(defpoll now-playing :interval "1s"
+(defpoll now-playing :interval "5s"
   :initial `/home/hugh/.config/eww/scripts/get-now-playing.sh`
   `/home/hugh/.config/eww/scripts/get-now-playing.sh`)
 
-(defpoll now-playing-status :interval "1s"
+(defpoll now-playing-status :interval "5s"
   :initial `/home/hugh/.config/eww/scripts/get-now-playing-status.sh`
   `/home/hugh/.config/eww/scripts/get-now-playing-status.sh`)
 
