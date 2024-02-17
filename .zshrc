@@ -107,3 +107,7 @@ export PICO_SDK_PATH="/usr/share/pico-sdk"
 
 alias sudo="sudo "
 alias nano="nano --rcfile /home/hugh/.config/nano/nanorc"
+
+alias pitty="minicom -b 1152000 -o -D /dev/ttyACM0"
+
+[ -f "/home/hugh/.ghcup/env" ] && source "/home/hugh/.ghcup/env" # ghcup-env
